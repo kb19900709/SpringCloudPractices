@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApplicationMain {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ApplicationMain.class, args);
-    }
-
     @RequestMapping("/theFirstFunction")
     public String theFirstFunction() {
-        return "Spring in cloud";
+        String message = "Spring in cloud";
+        System.out.println(message);
+        return message;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApplicationMain.class, args);
     }
 }
