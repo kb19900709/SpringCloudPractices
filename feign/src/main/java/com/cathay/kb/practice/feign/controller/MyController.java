@@ -1,19 +1,19 @@
-package com.cathay.kb.practice.ribbon.controller;
+package com.cathay.kb.practice.feign.controller;
 
+import com.cathay.kb.practice.feign.ws.LearnClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class MyController {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private LearnClient learnClient;
 
     @RequestMapping("/theFirstFunction")
     public String theFirstFunction() {
-        System.out.println("This is ribbon's controller");
-        return restTemplate.getForEntity("http://LEARN/theFirstFunction", String.class).getBody();
+        System.out.println("This is feign's controller");
+        return learnClient.theFirstFunction();
     }
 }

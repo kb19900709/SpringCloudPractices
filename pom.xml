@@ -19,6 +19,7 @@
         <module>eureka_client</module>
         <module>eureka_client2</module>
         <module>ribbon</module>
+        <module>feign</module>
     </modules>
 
     <!-- 依賴於 org.springframework.boot -->

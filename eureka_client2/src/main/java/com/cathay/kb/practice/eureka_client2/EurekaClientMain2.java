@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableDiscoveryClient
 @RestController
-public class ApplicationMain {
+public class EurekaClientMain2 {
 
     @RequestMapping("/theFirstFunction")
     public String theFirstFunction() {
-        String message = "Spring in cloud";
+        String message = "Spring in cloud : client2";
         System.out.println(message);
         return message;
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationMain.class, args);
+        SpringApplication.run(EurekaClientMain2.class, args);
     }
 }
