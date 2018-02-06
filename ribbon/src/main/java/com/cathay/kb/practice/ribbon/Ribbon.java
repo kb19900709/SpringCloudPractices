@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableCircuitBreaker //for git
+@EnableCircuitBreaker //for hystrix
 public class Ribbon {
 
     @Bean
