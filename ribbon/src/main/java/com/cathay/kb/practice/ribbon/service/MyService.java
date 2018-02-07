@@ -17,6 +17,12 @@ public class MyService {
         return restTemplate.getForEntity("http://LEARN/theFirstFunction", String.class).getBody();
     }
 
+    @HystrixCommand(fallbackMethod = "theFirstFunctionErrorBack")
+    public String companyAndMail() {
+        System.out.println("This is ribbon's service");
+        return restTemplate.getForEntity("http://LEARN/companyAndMail", String.class).getBody();
+    }
+
     private String theFirstFunctionErrorBack(){
         return "there is no response";
     }

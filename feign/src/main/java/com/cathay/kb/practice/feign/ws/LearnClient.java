@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface LearnClient {
     @RequestMapping("/theFirstFunction")
     String theFirstFunction();
+
+    @RequestMapping("/companyAndMail")
+    String companyAndMail();
 }

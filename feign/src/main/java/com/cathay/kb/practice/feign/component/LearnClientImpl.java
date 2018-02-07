@@ -9,4 +9,9 @@ public class LearnClientImpl implements LearnClient {
     public String theFirstFunction() {
         return "This is feign's LearnClientImpl";
     }
+
+    @Override
+    public String companyAndMail() {
+        return "This is feign's LearnClientImpl";
+    }
 }
