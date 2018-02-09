@@ -17,6 +17,7 @@
     <modules>
         <module>config</module>
         <module>eureka_server</module>
+        <module>zuul</module>
         <module>eureka_client</module>
         <module>eureka_client2</module>
         <module>ribbon</module>
