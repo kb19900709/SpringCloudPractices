@@ -13,19 +13,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
-import org.springframework.session.web.http.HeaderHttpSessionStrategy;
-import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.web.context.request.RequestContextListener;
 
 @Configuration
 @EnableWebSecurity
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 30)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_URL = "/login";
+    private static final String LOGIN_FORWARD_URL = "/auth/login/*";
 
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
@@ -34,17 +30,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    private FindByIndexNameSessionRepository sessionRepository;
+    private SpringSessionBackedSessionRegistry sessionRegistry;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
                 .maximumSessions(1)
-                .sessionRegistry(sessionRegistry());
+                .sessionRegistry(sessionRegistry);
 
-        http.csrf().disable().authorizeRequests()
-                .antMatchers("/").permitAll()
+        http.csrf().disable()
+                .authorizeRequests()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
+                .antMatchers(HttpMethod.POST, LOGIN_FORWARD_URL).permitAll()
 //                .antMatchers("/hello").hasAuthority("AUTH_WRITE")
 //                .antMatchers("/world").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -56,16 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(customAuthenticationProvider);
-    }
-
-    @Bean
-    public HttpSessionStrategy httpSessionStrategy() {
-        return new HeaderHttpSessionStrategy();
-    }
-
-    @Bean
-    public SpringSessionBackedSessionRegistry sessionRegistry() {
-        return new SpringSessionBackedSessionRegistry(this.sessionRepository);
     }
 
     @Bean

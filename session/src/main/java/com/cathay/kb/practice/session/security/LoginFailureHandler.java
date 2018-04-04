@@ -1,7 +1,5 @@
 package com.cathay.kb.practice.session.security;
 
-import org.json.JSONObject;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -16,11 +14,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-        JSONObject output = new JSONObject();
-        output.put("message", "Fail to login");
-        httpServletResponse.getOutputStream().println(output.toString());
+        httpServletRequest.getRequestDispatcher("auth/login/fail").forward(httpServletRequest, httpServletResponse);
     }
 }

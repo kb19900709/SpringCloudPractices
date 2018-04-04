@@ -1,30 +1,27 @@
 package com.cathay.kb.practice.session.controller;
 
-import com.cathay.kb.practice.session.bean.SessionMessage;
-import com.cathay.kb.practice.session.service.CacheService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-public class SecurityController {
+@RequestMapping("auth")
+public class SecurityController extends BaseController {
 
-    @Autowired
-    private CacheService cacheService;
+    @PostMapping("login/success")
+    public Map<String, Object> loginSuccess() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "Login success");
+        return result;
+    }
 
-    @RequestMapping("test")
-    public SessionMessage cookie(@RequestParam("browser") String browser) {
-        SessionMessage result = new SessionMessage();
-
-        String sessionBrowser = cacheService.getCache(CacheService.BROWSER, String.class);
-        if (sessionBrowser == null) {
-            result.setSessionMsg(String.format("%s, session has no attributes，set browser: %s, sessionId: %s", "123", browser, cacheService.getSession().getId()));
-            cacheService.setCache(CacheService.BROWSER, browser);
-        } else {
-            result.setSessionMsg(String.format("%s, session has attributes，browser: %s, sessionId: %s", "123", sessionBrowser, cacheService.getSession().getId()));
-        }
-
+    @PostMapping("login/fail")
+    public Map<String, Object> loginFail() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "Login fail, please try again");
         return result;
     }
 }

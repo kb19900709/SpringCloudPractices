@@ -25,6 +25,8 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private LoginFailureHandler loginFailureHandler;
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     public JwtLoginFilter(String url, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
@@ -32,7 +34,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-        AccountCredentials accountCredentials = new ObjectMapper().readValue(httpServletRequest.getInputStream(), AccountCredentials.class);
+        AccountCredentials accountCredentials = mapper.readValue(httpServletRequest.getInputStream(), AccountCredentials.class);
         return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
                         accountCredentials.getUserName(),
