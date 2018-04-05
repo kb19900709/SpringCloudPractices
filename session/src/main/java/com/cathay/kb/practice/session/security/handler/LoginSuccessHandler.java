@@ -1,6 +1,7 @@
-package com.cathay.kb.practice.session.security;
+package com.cathay.kb.practice.session.security.handler;
 
 
+import com.cathay.kb.practice.session.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -16,11 +17,11 @@ import java.io.IOException;
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
-    private TokenValidationService tokenValidationService;
+    private TokenService tokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        String jwt = tokenValidationService.getJwt(authentication);
+        String jwt = tokenService.getJwt(authentication);
         httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, jwt);
         httpServletRequest.getRequestDispatcher("auth/login/success").forward(httpServletRequest, httpServletResponse);
     }

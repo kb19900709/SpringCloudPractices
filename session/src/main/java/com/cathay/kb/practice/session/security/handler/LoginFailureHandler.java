@@ -1,4 +1,4 @@
-package com.cathay.kb.practice.session.security;
+package com.cathay.kb.practice.session.security.handler;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;

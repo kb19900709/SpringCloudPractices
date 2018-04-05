@@ -18,7 +18,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.joining;
 
 @Component
-public class TokenValidationService {
+public class TokenService {
 
     @Autowired
     private JwtService jwtService;

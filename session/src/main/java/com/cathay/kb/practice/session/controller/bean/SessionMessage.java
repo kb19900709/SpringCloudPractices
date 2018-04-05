@@ -1,4 +1,4 @@
-package com.cathay.kb.practice.session.bean;
+package com.cathay.kb.practice.session.controller.bean;
 
 public class SessionMessage {
     private String sessionMsg;

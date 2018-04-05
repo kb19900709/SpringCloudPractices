@@ -1,9 +1,11 @@
 package com.cathay.kb.practice.session.config;
 
 
-import com.cathay.kb.practice.session.security.CustomAuthenticationProvider;
-import com.cathay.kb.practice.session.security.JwtAuthenticationFilter;
-import com.cathay.kb.practice.session.security.JwtLoginFilter;
+import com.cathay.kb.practice.session.security.RestAuthenticationEntryPoint;
+import com.cathay.kb.practice.session.security.UserAuthenticationProvider;
+import com.cathay.kb.practice.session.security.filter.JwtAuthenticationFilter;
+import com.cathay.kb.practice.session.security.filter.JwtLoginFilter;
+import com.cathay.kb.practice.session.security.handler.SessionExpiredHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +16,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
-import org.springframework.web.context.request.RequestContextListener;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_URL = "/login";
-    private static final String LOGIN_FORWARD_URL = "/auth/login/*";
 
     @Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    private UserAuthenticationProvider userAuthenticationProvider;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -32,16 +32,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SpringSessionBackedSessionRegistry sessionRegistry;
 
+    @Autowired
+    private SessionExpiredHandler sessionExpiredHandler;
+
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
                 .maximumSessions(1)
-                .sessionRegistry(sessionRegistry);
+                .sessionRegistry(sessionRegistry)
+                .expiredSessionStrategy(sessionExpiredHandler);
 
-        http.csrf().disable()
+        http.exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and()
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
-                .antMatchers(HttpMethod.POST, LOGIN_FORWARD_URL).permitAll()
+                .antMatchers(HttpMethod.POST, getWhitelist()).permitAll()
 //                .antMatchers("/hello").hasAuthority("AUTH_WRITE")
 //                .antMatchers("/world").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -52,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(customAuthenticationProvider);
+        auth.authenticationProvider(userAuthenticationProvider);
     }
 
     @Bean
@@ -60,8 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtLoginFilter(LOGIN_URL, authenticationManager());
     }
 
-    @Bean
-    public RequestContextListener requestContextListener() {
-        return new RequestContextListener();
+    private String[] getWhitelist() {
+        final String LOGIN_FORWARD_URL = "/auth/login/*";
+        return new String[]{LOGIN_URL, LOGIN_FORWARD_URL};
     }
 }
