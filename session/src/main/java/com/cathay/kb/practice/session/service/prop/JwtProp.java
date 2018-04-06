@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("jwt")
 public class JwtProp {
     private long expirationTime;
+    private String expirationString;
     private String securityCode;
     private String roleKey;
 
@@ -16,6 +17,14 @@ public class JwtProp {
 
     public void setExpirationTime(long expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public String getExpirationString() {
+        return expirationString;
+    }
+
+    public void setExpirationString(String expirationString) {
+        this.expirationString = expirationString;
     }
 
     public String getSecurityCode() {

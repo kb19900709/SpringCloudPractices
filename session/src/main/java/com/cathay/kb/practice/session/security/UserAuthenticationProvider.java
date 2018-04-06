@@ -26,7 +26,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         if (isValid(authentication)) {
             return getNewAuthentication(authentication);
         }
-        throw new BadCredentialsException("password fail");
+        throw new BadCredentialsException("Password fail");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     private boolean isValid(Authentication authentication) {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        return name.equals("admin") && password.equals("123456");
+        return authService.isValid(name, password);
     }
 
     private Authentication getNewAuthentication(Authentication authentication) {

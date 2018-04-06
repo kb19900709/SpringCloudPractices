@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
@@ -16,10 +17,13 @@ public class JwtService {
     private JwtProp jwtProp;
 
     public String getJwtStr(String name, String roles) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        Date expirationTime = new Date(System.currentTimeMillis() + jwtProp.getExpirationTime());
         return Jwts.builder()
                 .claim(jwtProp.getRoleKey(), roles)
+                .claim(jwtProp.getExpirationString(), sdf.format(expirationTime))
                 .setSubject(name)
-                .setExpiration(new Date(System.currentTimeMillis() + jwtProp.getExpirationTime()))
+                .setExpiration(expirationTime)
                 .signWith(SignatureAlgorithm.HS512, jwtProp.getSecurityCode())
                 .compact();
     }

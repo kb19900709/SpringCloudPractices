@@ -11,5 +11,6 @@ spring:
 
 jwt:
   expirationTime: 300000
+  expirationString: expS
   securityCode: ${spring.redis.password}
   roleKey: authorities

@@ -1,6 +1,8 @@
 package com.cathay.kb.practice.session.security.bean;
 
 public class AuthStatus {
+    public static final String DEFAULT_ERROR_MESSAGE = "Unauthorized";
+    public static final String DEFAULT_AUTH_EXCEPTION = "authException";
 
     public static AuthStatus initAuthStatus(String authMessage) {
         return new AuthStatus(authMessage);

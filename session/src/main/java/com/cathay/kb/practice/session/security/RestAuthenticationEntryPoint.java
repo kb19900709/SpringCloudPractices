@@ -1,5 +1,8 @@
 package com.cathay.kb.practice.session.security;
 
+import com.cathay.kb.practice.session.security.bean.AuthStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
@@ -11,9 +14,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
@@ -21,6 +27,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        resolver.resolveException(request, response, null, authException);
+        AuthenticationException finalAuthException = null;
+        try {
+            finalAuthException = Optional.ofNullable(request.getAttribute(AuthStatus.DEFAULT_AUTH_EXCEPTION))
+                    .map(e -> (AuthenticationException) e)
+                    .orElse(authException);
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            finalAuthException = authException;
+        } finally {
+            resolver.resolveException(request, response, null, finalAuthException);
+        }
     }
 }

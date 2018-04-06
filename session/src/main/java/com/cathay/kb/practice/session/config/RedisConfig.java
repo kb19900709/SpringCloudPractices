@@ -10,7 +10,7 @@ import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
 
 @Configuration
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 300000)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 300)
 public class RedisConfig {
 
     @Autowired
