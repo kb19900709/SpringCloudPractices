@@ -24,7 +24,6 @@
         <module>ribbon</module>
         <module>feign</module>
         <module>hystrix_dashboard</module>
-        <module>session</module>
     </modules>
 
     <!-- 依賴於 org.springframework.boot -->
