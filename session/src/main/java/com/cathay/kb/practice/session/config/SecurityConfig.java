@@ -6,6 +6,7 @@ import com.cathay.kb.practice.session.security.UserAuthenticationProvider;
 import com.cathay.kb.practice.session.security.filter.JwtAuthenticationFilter;
 import com.cathay.kb.practice.session.security.filter.JwtLoginFilter;
 import com.cathay.kb.practice.session.security.handler.SessionExpiredHandler;
+import com.cathay.kb.practice.session.security.handler.SessionLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String LOGIN_URL = "/login";
+    private static final String LOGIN_URL = "/app-login";
 
     @Autowired
     private UserAuthenticationProvider userAuthenticationProvider;
@@ -34,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SessionExpiredHandler sessionExpiredHandler;
+
+    @Autowired
+    private SessionLogoutSuccessHandler sessionLogoutSuccessHandler;
 
     @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
@@ -51,6 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and()
+                .logout()
+                .logoutUrl("/app-logout")
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessHandler(sessionLogoutSuccessHandler)
                 .and()
                 .sessionManagement()
                 .maximumSessions(1)

@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public class AuthService {
     public boolean isValid(String name, String password) {
-        return true;
+        return "admin".equals(name) && "123456".equals(password);
     }
 
     public List<String> findUserRoles(String name) {

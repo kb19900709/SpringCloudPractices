@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        Authentication authentication = null;
+        Authentication authentication;
         try {
             String jwtStr = Optional.ofNullable(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION))
                     .orElseThrow(() -> new BadCredentialsException("No JWT in http header"));
@@ -54,16 +54,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .sorted(getLastSessionInformationComparator().reversed())
                     .findFirst()
                     .map(SessionInformation::getSessionId)
-                    .get();
+                    .orElse("");
 
             if (!sessionId.equals(theLastSessionId)) {
-                authentication = null;
                 throw new SessionAuthenticationException(AuthStatus.DEFAULT_ERROR_MESSAGE);
             }
 
             String newJwt = tokenService.getJwt(authentication);
             httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newJwt);
         } catch (Exception e) {
+            authentication = null;
             httpServletRequest.setAttribute(AuthStatus.DEFAULT_AUTH_EXCEPTION, e);
             LOGGER.error(e.getMessage());
         }

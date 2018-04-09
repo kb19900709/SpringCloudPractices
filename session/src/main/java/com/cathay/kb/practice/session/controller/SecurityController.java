@@ -21,4 +21,9 @@ public class SecurityController extends BaseController {
     public AuthStatus loginFail() {
         return AuthStatus.initAuthStatus("Login fail, please try again");
     }
+
+    @PostMapping("login/out")
+    public AuthStatus logout() {
+        return AuthStatus.initAuthStatus("Logout success");
+    }
 }
